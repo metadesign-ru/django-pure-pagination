@@ -77,16 +77,28 @@ A few settings can be set within settings.py
 
 ::
 
-    PAGINATION_SETTINGS = {
-        'PAGE_RANGE_DISPLAYED': 10,
-        'MARGIN_PAGES_DISPLAYED': 2,
-    }
+PAGINATION_SETTINGS = {
+    'PAGE_RANGE_DISPLAYED': 10,
+    'MARGIN_PAGES_DISPLAYED': 2,
+    'ITEMS_PER_PAGE_CHOICES': (15, 30, 60),
+    'ITEMS_PER_PAGE_DEFAULT': 15,
+    'ITEMS_PER_PAGE_COOKIE_NAME': 'pagination_limit',
+    'ITEMS_PER_PAGE_REDIRECT_VIEW_NAME': 'board:list',
+}
 
 **PAGE_RANGE_DISPLAYED** is the number of pages neighbouring the current page which will be displayed (default is 10)
 
 **MARGIN_PAGES_DISPLAYED** is the number of pages neighbouring the first and last page which will be displayed (default is 2)
 
 .. image:: http://i.imgur.com/LCqrt.gif
+
+**ITEMS_PER_PAGE_CHOICES** is the tuple of numbers for allowed limit of items per page (default is (15, 30, 60))
+
+**ITEMS_PER_PAGE_DEFAULT** is the number of items per page (default is 15)
+
+**ITEMS_PER_PAGE_COOKIE_NAME** is cookie name for limits per page (default is 'pagination_limit')
+
+**ITEMS_PER_PAGE_REDIRECT_VIEW_NAME** is name of view where user will be redirected (default is None)
 
 Usage example
 -------------
@@ -182,6 +194,16 @@ Alternatively you can access the Page object low level methods yourself
         {% endif %}
     </div>
 
+    <div>
+        <ul class="paging">
+            {% for paginate_limit in page_obj.get_paginate_by_choices() %}
+                <li>
+                    <a href="{{ url('namespace:ipp_limit', paginate_limit) }}"{% if paginate_limit == page_size %} class="active"{% endif %}>{{ paginate_limit }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
 Generic Class-Based Views
 -------------------------
 
@@ -193,18 +215,18 @@ view file:
 * **views.py**
 
     ::
-    
+
         # views.py
         from django.views.generic import ListView
-        
+
         from pure_pagination.mixins import PaginationMixin
-        
+
         from my_app.models import MyModel
-    
-    
+
+
         class MyModelListView(PaginationMixin, ListView):
             # Important, this tells the ListView class we are paginating
-            paginate_by = 10 
+            paginate_by = 10
             # Replace it for your model or use the queryset attribute instead
             object = MyModel
 
@@ -215,7 +237,7 @@ Note that the Django generic-based list view will include the object **page_obj*
 * **_pagination.html**
 
     ::
-    
+
         {% load i18n %}
         <div class="pagination">
             {% if page_obj.has_previous %}
@@ -244,19 +266,19 @@ Note that the Django generic-based list view will include the object **page_obj*
 *  **my_app/myobject_list.html**
 
     ::
-    
+
         {# my_app/myobject_list.html #}
         {% extends 'base.html' %}
-    
+
         {% block content %}
-    
+
         {% for object in object_list %}
             <div>
                 First name: {{ object.first_name }}
             </div>
         {% endfor %}
-    
+
         {# The following renders the pagination html #}
         {% include "_pagination.html" %}
-    
-        {% endblock %}    
+
+        {% endblock %}

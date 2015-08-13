@@ -10,6 +10,11 @@ PAGINATION_SETTINGS = getattr(settings, "PAGINATION_SETTINGS", {})
 
 PAGE_RANGE_DISPLAYED = PAGINATION_SETTINGS.get("PAGE_RANGE_DISPLAYED", 10)
 MARGIN_PAGES_DISPLAYED = PAGINATION_SETTINGS.get("MARGIN_PAGES_DISPLAYED", 2)
+ITEMS_PER_PAGE_CHOICES = PAGINATION_SETTINGS.get("ITEMS_PER_PAGE_CHOICES", (15, 30, 60))
+ITEMS_PER_PAGE_DEFAULT = PAGINATION_SETTINGS.get("ITEMS_PER_PAGE_DEFAULT", 15)
+ITEMS_PER_PAGE_COOKIE_NAME = PAGINATION_SETTINGS.get("ITEMS_PER_PAGE_COOKIE_NAME", 'pagination_limit')
+ITEMS_PER_PAGE_REDIRECT_VIEW_NAME = PAGINATION_SETTINGS.get("ITEMS_PER_PAGE_REDIRECT_VIEW_NAME")
+
 
 class PageNotAnInteger(InvalidPage):
     pass
@@ -125,6 +130,9 @@ class Page(object):
 
     def __repr__(self):
         return '<Page %s of %s>' % (self.number, self.paginator.num_pages)
+
+    def get_paginate_by_choices(self):
+        return ITEMS_PER_PAGE_CHOICES
 
     def has_next(self):
         return self.number < self.paginator.num_pages
