@@ -1,5 +1,6 @@
 # encoding: utf-8
-from pure_pagination.paginator import Paginator, ITEMS_PER_PAGE_COOKIE_NAME, ITEMS_PER_PAGE_DEFAULT, ITEMS_PER_PAGE_CHOICES
+from pure_pagination.paginator import (Paginator, ITEMS_PER_PAGE_COOKIE_NAME,
+                                       ITEMS_PER_PAGE_DEFAULT, ITEMS_PER_PAGE_CHOICES)
 
 
 class PaginationMixin(object):
